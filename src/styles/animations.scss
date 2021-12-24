@@ -3,6 +3,14 @@
   animation: scale-up-center 0.2s ease-in both;
 }
 
+.spinning-logo {
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: rotate(90deg);
+  }
+}
+
+
 @-webkit-keyframes scale-up-center {
   0% {
     -webkit-transform: scale(0.5);
@@ -13,6 +21,7 @@
     transform: scale(1);
   }
 }
+
 @keyframes scale-up-center {
   0% {
     -webkit-transform: scale(0.5);

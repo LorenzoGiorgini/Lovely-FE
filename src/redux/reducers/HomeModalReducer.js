@@ -1,7 +1,10 @@
-import { SET_MODAL_SHOW } from "../actions/actions";
+import { SET_MODAL_SHOW, SET_MODAL_COMPONENT } from "../actions/actions";
 
 const HomeModalInitialState = {
-  homeModal: false,
+  homeModal: {
+    show: false,
+    component: null,
+  },
 };
 
 const HomeModalReducer = (state = HomeModalInitialState, action) => {
@@ -11,11 +14,23 @@ const HomeModalReducer = (state = HomeModalInitialState, action) => {
     case SET_MODAL_SHOW:
       return {
         ...state,
-        homeModal: payload,
+        homeModal: {
+          ...state.homeModal,
+          show: payload,
+        },
+      };
+    case SET_MODAL_COMPONENT:
+      return {
+        ...state,
+        homeModal: {
+          ...state.homeModal,
+          component: payload,
+        },
       };
     default:
-        return state;
+      return state;
   }
 };
+
 
 export default HomeModalReducer;

@@ -1,9 +1,9 @@
-import React from 'react'
 
-function SignUp() {
+
+const SignUp = () => {
     return (
         <div className="flex flex-col">
-            Log In
+           asdasdasdsads
         </div>
     )
 }

@@ -11,6 +11,7 @@ import HomeModalReducer from "../reducers/HomeModalReducer";
 const persistConfig = {
   key: "root",
   storage,
+  blacklist: ["home"],
 };
 
 

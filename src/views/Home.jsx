@@ -4,16 +4,18 @@ import Modal from "../components/Modal/Modal";
 import NavBarHome from "../components/NavBarHome/NavBarHome";
 
 const Home = () => {
+  const { show } = useSelector(state => state.home.homeModal);
+  const { component } = useSelector(state => state.home.homeModal);
 
-  const {homeModal} = useSelector(state => state.home);
 
   return (
     <div className="h-screen overflow-x-hidden overflow-y-hidden bg-gradient-to-l from-indigo-500 via-purple-500 to-pink-500">
       <NavBarHome />
       <LoginHero />
-      {homeModal && <Modal />}
+      {show && <Modal component={component} />}
     </div>
   );
 }
+
 
 export default Home;
