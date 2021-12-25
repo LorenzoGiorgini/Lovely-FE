@@ -7,7 +7,7 @@ const Modal = ({ component }) => {
 
   return (
     <div
-      className="flex justify-center md:bg-transparent font-sans text-white font-bold items-center overflow-x-hidden overflow-y-auto fixed inset-0 bg-blend-overlay"
+      className="flex overlay-bg justify-center md:bg-transparent font-sans text-white font-bold items-center overflow-x-hidden overflow-y-auto fixed inset-0 bg-blend-overlay"
       onClick={() => dispatch(setShow(false))}
     >
       <div
