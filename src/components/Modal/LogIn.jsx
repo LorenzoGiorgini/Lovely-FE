@@ -1,4 +1,7 @@
 import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 import { setModalComponent } from "../../redux/actions/actions";
 import SignUp from "./SignUp";
 import LoginHeroBtn from "../LoginHeroBtn/LoginHeroBtn";
@@ -6,17 +9,31 @@ import LoginHeroBtn from "../LoginHeroBtn/LoginHeroBtn";
 const LogIn = () => {
   const dispatch = useDispatch();
 
-  const logInUser = (e) => {
-    e.preventDefault();
-  };
+  const schema = yup.object({
+    Email: yup.string().email().required(),
+    Password: yup.string().min(8).max(16).required(),
+  }).required();
+
+  const { register, handleSubmit, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+  });
+
+  const onSubmit = (data) => {
+    console.log(data);
+  }
+
+
+  const googleLogin = () => {
+    console.log("google login");
+  }
 
   return (
     <div className="flex flex-col justify-center items-center font-sans">
       <h1 className="flex justify-center text-purple-500 text-3xl mb-2">
-        Get Started
+        Log In
       </h1>
       <div className="w-full">
-        <form onSubmit={(e) => logInUser(e)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col w-full rounded-lg mb-4">
             <span className="text-pink-500">Email</span>
             <input
@@ -24,7 +41,9 @@ const LogIn = () => {
               id="email"
               placeholder="Email"
               className="w-full outline-none text-purple-500 bg-transparent"
+              {...register("Email")}
             />
+            <p className="mt-2  peer-invalid:visible text-red-600">{errors.Email?.message}</p>
           </div>
           <div className="flex flex-col w-full rounded-lg mb-4">
             <span className="text-pink-500">Password</span>
@@ -33,20 +52,17 @@ const LogIn = () => {
               id="password"
               placeholder="Password"
               className="w-full outline-none text-purple-500 bg-transparent"
+              {...register("Password")}
             />
+            <p className="mt-2  peer-invalid:visible text-red-600">{errors.Password?.message}</p>
           </div>
-          <button
-            type="submit"
-            className="shadow-pink-500 w-full h-8 rounded-lg font-bold bg-gradient-to-l from-pink-500 to-purple-500"
-          >
-            Log In
-          </button>
+          <LoginHeroBtn title={"Log In"} width={"w-full"} height={"h-9"}  gradient={"bg-gradient-to-l from-pink-500 to-purple-500"} type={"submit"} callback={true} />
         </form>
         <div>
           <div className="line-trough">
             <span>or</span>
           </div>
-          <LoginHeroBtn title={"Google"} width={"w-full"} height={"h-9"} />
+          <LoginHeroBtn title={"Google"} width={"w-full"} height={"h-9"} gradient={"bg-gradient-to-l from-orange-500 to-pink-500"} callback={googleLogin}/>
         </div>
       </div>
 
@@ -62,5 +78,7 @@ const LogIn = () => {
     </div>
   );
 };
+
+
 
 export default LogIn;
