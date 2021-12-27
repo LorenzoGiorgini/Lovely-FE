@@ -6,7 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 
 //navigation
-import { useNavigate } from "react-router-dom";
+import history from "./tools/history";
 
 //redux
 import { Provider } from "react-redux";
@@ -35,9 +35,10 @@ axios.interceptors.response.use(
       originalRequest.url ===
         process.env.REACT_APP_BE_URL + "/users/refreshToken"
     ) {
+      //redirect to login page
+      history.push("/");
       return Promise.reject(error);
     }
-
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       return axios.post("/users/refreshToken").then((res) => {
@@ -62,5 +63,6 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
+
 
 reportWebVitals();
