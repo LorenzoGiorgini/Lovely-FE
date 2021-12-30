@@ -1,7 +1,4 @@
 import { useDispatch } from "react-redux";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { setModalComponent } from "../../redux/actions/actions";
 import SignUp from "./SignUp";
 import LoginHeroBtn from "../LoginHeroBtn/LoginHeroBtn";
@@ -10,22 +7,9 @@ import Input from "../Input/Input";
 const LogIn = () => {
   const dispatch = useDispatch();
 
-  const schema = yup
-    .object({
-      Email: yup.string().email().required(),
-      Password: yup.string().min(8).max(16).required(),
-    })
-    .required();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-  const onSubmit = (data) => {
+  const handleSubmit = (data) => {
+    e.preventDefault();
     console.log(data);
   };
 
@@ -39,18 +23,16 @@ const LogIn = () => {
         Log In
       </h1>
       <div className="w-full">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <Input
             id="email"
             placeholder="Email"
-            {...register("Email")}
-            errors={errors.Email?.message}
+            
           />
           <Input
             id="password"
             placeholder="Password"
-            {...register("Password")}
-            errors={errors.Password?.message}
+            
           />
           <LoginHeroBtn
             title={"Log In"}

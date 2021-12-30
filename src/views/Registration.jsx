@@ -33,8 +33,6 @@ const Registration = () => {
     } else {
       setGoogleAcc(null);
     }
-
-    console.log(googleAcc);
   }, []);
 
   return googleAcc ? (
@@ -53,7 +51,7 @@ const Registration = () => {
               <DesktopDatePicker
                 label="Birthday"
                 inputFormat="MM/dd/yyyy"
-                variant="dialog"
+                variant="standard"
                 margin="normal"
                 id="date-picker"
                 value={form.dateOfBirth}
@@ -77,6 +75,7 @@ const Registration = () => {
             info={"preferences"}
           />
           <Input id="email" placeholder="Email" />
+          {!googleAcc && <Input id="password" placeholder="Password" />}
         </div>
         <div className="w-full md:w-3/6 h-full">
           <h1>Profile Pic</h1>
