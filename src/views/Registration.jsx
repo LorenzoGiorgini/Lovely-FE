@@ -7,6 +7,7 @@ import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import { TextField } from "@mui/material";
 import Input from "../components/Input/Input";
 import ButtonGroup from "../components/ButtonGroup/ButtonGroup";
+import Title from "../components/Title/Title";
 
 const Registration = () => {
   const gender = ["Man", "Woman"];
@@ -23,30 +24,54 @@ const Registration = () => {
     dateOfBirth: null,
     gender: "",
     preferences: "",
+    googleId: null
   });
-  
 
-  
+  const handleForm = (e) => {
+    const value = e.target.value;
+    setForm({
+      ...form,
+      [e.target.name]: value,
+    });
+  };
+
   useEffect(() => {
     if (cookie.get("acc")) {
       setGoogleAcc(JSON.parse(cookie.get("acc").substring(2)));
+      setForm({
+        ...form,
+        googleId: JSON.parse(cookie.get("acc").substring(2)).id,
+        email: JSON.parse(cookie.get("acc").substring(2)).email
+      })
     } else {
       setGoogleAcc(null);
     }
   }, []);
 
-  return googleAcc ? (
-    <div className="bg-gray-500 h-full w-full">
+  return (
+    <div className="bg-neutral-900 h-full w-full">
       <NavBarHome />
-      <h1 className="flex items-center justify-center">Create Account</h1>
-      <div className="flex flex-col md:flex-row w-full h-full justify-around p-32">
+      <Title placeholder="Create Account" />
+      <div className="flex flex-col md:flex-row w-full h-screen justify-around p-12 md:p-32 ml-auto mr-auto">
         <div className="w-full md:w-3/6">
-          <div className="flex">
-            <Input id="text" placeholder="First Name" />
-            <Input id="text" placeholder="Last Name" />
+          <div className="flex mb-3">
+            <Input
+              id="text"
+              name="firstName"
+              value={form.firstName}
+              placeholder="First Name"
+              handleForm={handleForm}
+            />
+            <Input
+              id="text"
+              name="lastName"
+              value={form.lastName}
+              placeholder="Last Name"
+              handleForm={handleForm}
+            />
           </div>
-          <div className="flex flex-col">
-            <span className="text-pink-500">Birthday</span>
+          <div className="flex flex-col mb-3">
+            <span className="text-pink-500 mb-2">Birthday</span>
             <LocalizationProvider dateAdapter={DateAdapter}>
               <DesktopDatePicker
                 label="Birthday"
@@ -74,15 +99,41 @@ const Registration = () => {
             setForm={setForm}
             info={"preferences"}
           />
-          <Input id="email" placeholder="Email" />
-          {!googleAcc && <Input id="password" placeholder="Password" />}
+          <div className="mb-3">
+            {googleAcc ? (
+              <Input
+                id="email"
+                name="email"
+                value={googleAcc.email}
+                placeholder="Email"
+                handleForm={handleForm}
+              />
+            ) : (
+              <Input
+                id="email"
+                name="email"
+                value={form.email}
+                placeholder="Email"
+                handleForm={handleForm}
+              />
+            )}
+            {!googleAcc && (
+              <Input
+                id="password"
+                name="password"
+                value={form.password}
+                placeholder="Password"
+                handleForm={handleForm}
+              />
+            )}
+          </div>
         </div>
         <div className="w-full md:w-3/6 h-full">
-          <h1>Profile Pic</h1>
+          <h1 className="text-center">Profile Pic</h1>
         </div>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export default Registration;

@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { setShow } from "../../redux/actions/actions";
 import CloseBtn from "../../assets/svgs/close-btn.svg";
+import Title from "../Title/Title";
 import "./modal.scss";
 
 const Modal = ({ component }) => {
@@ -23,6 +24,7 @@ const Modal = ({ component }) => {
             onClick={() => dispatch(setShow(false))}
           />
         </div>
+        <Title placeholder="Log In" /> 
         <div className="w-full h-full md:h-fit flex justify-center">
           {component}
         </div>
@@ -30,7 +32,6 @@ const Modal = ({ component }) => {
     </div>
   );
 };
-
 
 
 export default Modal;

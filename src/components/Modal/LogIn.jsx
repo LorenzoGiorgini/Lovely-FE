@@ -8,9 +8,9 @@ const LogIn = () => {
   const dispatch = useDispatch();
 
 
-  const handleSubmit = (data) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(data);
+    
   };
 
   const googleLogin = () => {
@@ -19,9 +19,6 @@ const LogIn = () => {
 
   return (
     <div className="flex flex-col justify-center items-center font-sans">
-      <h1 className="flex justify-center text-purple-500 text-3xl mb-2">
-        Log In
-      </h1>
       <div className="w-full">
         <form onSubmit={(e) => handleSubmit(e)}>
           <Input
