@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { setShow } from "../../redux/actions/actions";
+import CloseBtn from "../../assets/svgs/close-btn.svg";
 import "./modal.scss";
 
 const Modal = ({ component }) => {
@@ -16,7 +17,7 @@ const Modal = ({ component }) => {
       >
         <div className="flex justify-end">
           <img
-            src="/assets/svgs/close-btn.svg"
+            src={CloseBtn}
             alt="close-btn"
             className="w-8 h-8 cursor-pointer spinning-logo"
             onClick={() => dispatch(setShow(false))}
