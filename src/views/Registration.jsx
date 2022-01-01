@@ -11,6 +11,9 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import LoginHeroBtn from "../components/LoginHeroBtn/LoginHeroBtn";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 const Registration = () => {
   const gender = ["Man", "Woman"];
@@ -31,6 +34,19 @@ const Registration = () => {
     preferences: "",
     googleId: "",
   });
+
+  const schema = yup
+    .object()
+    .shape({
+      firstName: yup.string().required(),
+      age: yup.number().positive().integer().required(),
+    })
+    .required();
+
+  const { register, handleSubmit, errors } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const onSubmit = (data) => console.log(data);
 
   const onDisabled = () => {
     if (googleAcc) {
@@ -93,16 +109,13 @@ const Registration = () => {
     onDisabled();
   }, []);
 
-
   const newUser = async () => {
     try {
       const response = await axiosConfig.post("/users/register", form);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-
-
+  };
 
   return (
     <div className="bg-neutral-900 h-full w-full">
@@ -110,85 +123,87 @@ const Registration = () => {
       <Title placeholder="Create Account" />
       <div className="flex flex-col md:flex-row w-full h-screen justify-around p-12 md:p-32 ml-auto mr-auto">
         <div className="w-full md:w-3/6">
-          <div className="flex mb-3">
-            <Input
-              id="text"
-              name="firstName"
-              value={form.firstName}
-              placeholder="First Name"
-              handleForm={handleForm}
-            />
-            <Input
-              id="text"
-              name="lastName"
-              value={form.lastName}
-              placeholder="Last Name"
-              handleForm={handleForm}
-            />
-          </div>
-          <div className="flex flex-col mb-3">
-            <span className="text-pink-500 mb-2">Birthday</span>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                format="MM/dd/yyyy"
-                disableFuture={true}
-                value={form.dateOfBirth}
-                onChange={(date) => setForm({ ...form, dateOfBirth: date })}
-              />
-            </MuiPickersUtilsProvider>
-          </div>
-          <span className="text-pink-500">Gender</span>
-          <ButtonGroup
-            options={gender}
-            form={form}
-            setForm={setForm}
-            info={"gender"}
-          />
-          <span className="text-pink-500">Preferences</span>
-          <ButtonGroup
-            options={preferences}
-            form={form}
-            setForm={setForm}
-            info={"preferences"}
-          />
-          <div className="mb-3">
-            {googleAcc ? (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex mb-3">
               <Input
-                id="email"
-                name="email"
-                value={googleAcc.email}
-                placeholder="Email"
+                id="text"
+                name="firstName"
+                value={form.firstName}
+                placeholder="First Name"
                 handleForm={handleForm}
               />
-            ) : (
               <Input
-                id="email"
-                name="email"
-                value={form.email}
-                placeholder="Email"
+                id="text"
+                name="lastName"
+                value={form.lastName}
+                placeholder="Last Name"
                 handleForm={handleForm}
               />
-            )}
-            {!googleAcc && (
-              <Input
-                id="password"
-                name="password"
-                value={form.password}
-                placeholder="Password"
-                handleForm={handleForm}
-              />
-            )}
-          </div>
-          <div className="flex items-center justify-center">
-            <LoginHeroBtn
-              title={"Continue"}
-              width={"w-3/6"}
-              height={"h-9"}
-              gradient={"bg-gradient-to-l from-orange-500 to-pink-500"}
-              disabled={disabled}
-              callback={newUser}
+            </div>
+            <div className="flex flex-col mb-3">
+              <span className="text-pink-500 mb-2">Birthday</span>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  format="MM/dd/yyyy"
+                  disableFuture={true}
+                  value={form.dateOfBirth}
+                  onChange={(date) => setForm({ ...form, dateOfBirth: date })}
+                />
+              </MuiPickersUtilsProvider>
+            </div>
+            <span className="text-pink-500">Gender</span>
+            <ButtonGroup
+              options={gender}
+              form={form}
+              setForm={setForm}
+              info={"gender"}
             />
-          </div>
+            <span className="text-pink-500">Preferences</span>
+            <ButtonGroup
+              options={preferences}
+              form={form}
+              setForm={setForm}
+              info={"preferences"}
+            />
+            <div className="mb-3">
+              {googleAcc ? (
+                <Input
+                  id="email"
+                  name="email"
+                  value={googleAcc.email}
+                  placeholder="Email"
+                  handleForm={handleForm}
+                />
+              ) : (
+                <Input
+                  id="email"
+                  name="email"
+                  value={form.email}
+                  placeholder="Email"
+                  handleForm={handleForm}
+                />
+              )}
+              {!googleAcc && (
+                <Input
+                  id="password"
+                  name="password"
+                  value={form.password}
+                  placeholder="Password"
+                  handleForm={handleForm}
+                />
+              )}
+            </div>
+            <div className="flex items-center justify-center">
+              <LoginHeroBtn
+                title={"Continue"}
+                width={"w-3/6"}
+                height={"h-9"}
+                gradient={"bg-gradient-to-l from-orange-500 to-pink-500"}
+                disabled={disabled}
+                callback={newUser}
+              />
+            </div>
+          </form>
         </div>
         <div className="w-full md:w-3/6 h-full">
           <h1 className="text-center">Profile Pic</h1>
@@ -197,7 +212,5 @@ const Registration = () => {
     </div>
   );
 };
-
-
 
 export default Registration;
