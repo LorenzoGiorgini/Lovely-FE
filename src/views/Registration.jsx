@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import cookie from "js-cookie";
+import axiosConfig from "../tools/axios-config";
 import NavBarHome from "../components/NavBarHome/NavBarHome";
-import DateAdapter from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
-import { TextField } from "@mui/material";
 import Input from "../components/Input/Input";
 import ButtonGroup from "../components/ButtonGroup/ButtonGroup";
 import Title from "../components/Title/Title";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import LoginHeroBtn from "../components/LoginHeroBtn/LoginHeroBtn";
 
 const Registration = () => {
   const gender = ["Man", "Woman"];
@@ -15,6 +18,8 @@ const Registration = () => {
   const preferences = ["Man", "Woman", "Everyone"];
 
   const [googleAcc, setGoogleAcc] = useState(null);
+
+  const [disabled, setDisabled] = useState(true);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -24,8 +29,40 @@ const Registration = () => {
     dateOfBirth: null,
     gender: "",
     preferences: "",
-    googleId: null
+    googleId: "",
   });
+
+  const onDisabled = () => {
+    if (googleAcc) {
+      if (
+        form.firstName === "" ||
+        form.lastName === "" ||
+        form.email === "" ||
+        form.dateOfBirth === null ||
+        form.gender === "" ||
+        form.preferences === "" ||
+        form.googleId === ""
+      ) {
+        setDisabled(true);
+      } else {
+        setDisabled(false);
+      }
+    } else {
+      if (
+        form.firstName === "" ||
+        form.lastName === "" ||
+        form.email === "" ||
+        form.dateOfBirth === null ||
+        form.gender === "" ||
+        form.preferences === "" ||
+        form.password === ""
+      ) {
+        setDisabled(true);
+      } else {
+        setDisabled(false);
+      }
+    }
+  };
 
   const handleForm = (e) => {
     const value = e.target.value;
@@ -41,12 +78,31 @@ const Registration = () => {
       setForm({
         ...form,
         googleId: JSON.parse(cookie.get("acc").substring(2)).id,
-        email: JSON.parse(cookie.get("acc").substring(2)).email
-      })
+        email: JSON.parse(cookie.get("acc").substring(2)).email,
+      });
     } else {
       setGoogleAcc(null);
     }
   }, []);
+
+  useEffect(() => {
+    onDisabled();
+  }, [form]);
+
+  useEffect(() => {
+    onDisabled();
+  }, []);
+
+
+  const newUser = async () => {
+    try {
+      const response = await axiosConfig.post("/users/register", form);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
 
   return (
     <div className="bg-neutral-900 h-full w-full">
@@ -72,18 +128,14 @@ const Registration = () => {
           </div>
           <div className="flex flex-col mb-3">
             <span className="text-pink-500 mb-2">Birthday</span>
-            <LocalizationProvider dateAdapter={DateAdapter}>
-              <DesktopDatePicker
-                label="Birthday"
-                inputFormat="MM/dd/yyyy"
-                variant="standard"
-                margin="normal"
-                id="date-picker"
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                format="MM/dd/yyyy"
+                disableFuture={true}
                 value={form.dateOfBirth}
                 onChange={(date) => setForm({ ...form, dateOfBirth: date })}
-                renderInput={(params) => <TextField {...params} />}
               />
-            </LocalizationProvider>
+            </MuiPickersUtilsProvider>
           </div>
           <span className="text-pink-500">Gender</span>
           <ButtonGroup
@@ -127,6 +179,16 @@ const Registration = () => {
               />
             )}
           </div>
+          <div className="flex items-center justify-center">
+            <LoginHeroBtn
+              title={"Continue"}
+              width={"w-3/6"}
+              height={"h-9"}
+              gradient={"bg-gradient-to-l from-orange-500 to-pink-500"}
+              disabled={disabled}
+              callback={newUser}
+            />
+          </div>
         </div>
         <div className="w-full md:w-3/6 h-full">
           <h1 className="text-center">Profile Pic</h1>
@@ -135,5 +197,7 @@ const Registration = () => {
     </div>
   );
 };
+
+
 
 export default Registration;

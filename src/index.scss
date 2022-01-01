@@ -27,3 +27,9 @@
   font-weight: 900;
   src: url("./assets/fonts/Inter-ExtraBold.ttf");
 }
+
+
+::selection {
+  color: #fff;
+  background: #f97316;
+}

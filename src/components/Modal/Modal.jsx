@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
 import { setShow } from "../../redux/actions/actions";
 import CloseBtn from "../../assets/svgs/close-btn.svg";
-import Title from "../Title/Title";
 import "./modal.scss";
 
 const Modal = ({ component }) => {
@@ -13,7 +12,7 @@ const Modal = ({ component }) => {
       onClick={() => dispatch(setShow(false))}
     >
       <div
-        className={`w-full h-full bg-neutral-900 md:w-96 md:h-96 z-40 drop-shadow-2xl md:rounded-lg overflow-hidden scale-up-center p-3 border-4 border-x-pink-600 border-y-purple-600`}
+        className={`w-full h-full bg-neutral-900 md:w-[440px] md:h-[500px] z-40 drop-shadow-2xl md:rounded-lg overflow-hidden scale-up-center p-3 border-4 border-x-pink-600 border-y-purple-600`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-end">
@@ -24,8 +23,7 @@ const Modal = ({ component }) => {
             onClick={() => dispatch(setShow(false))}
           />
         </div>
-        <Title placeholder="Log In" /> 
-        <div className="w-full h-full md:h-fit flex justify-center">
+        <div className="w-full h-full flex justify-center">
           {component}
         </div>
       </div>
