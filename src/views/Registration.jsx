@@ -38,15 +38,33 @@ const Registration = () => {
   const schema = yup
     .object()
     .shape({
-      firstName: yup.string().required(),
-      age: yup.number().positive().integer().required(),
+      firstName: yup.string().min(2).required(),
+      lastName: yup.string().min(2).required(),
+      email: yup.string().email().required(),
+      password: googleAcc ? null : yup.string().min(8).required(),
+      dateOfBirth: yup.date().required(),
+      gender: yup.string.required(),
+      preferences: yup.string.required(),
     })
     .required();
 
-  const { register, handleSubmit, errors } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data) => console.log(data);
+  
+  const onSubmit = (data) => {
+    if(data) {
+      try {
+        const response = await axiosConfig.post("/users/register", form);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
 
   const onDisabled = () => {
     if (googleAcc) {
@@ -109,13 +127,6 @@ const Registration = () => {
     onDisabled();
   }, []);
 
-  const newUser = async () => {
-    try {
-      const response = await axiosConfig.post("/users/register", form);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <div className="bg-neutral-900 h-full w-full">
@@ -124,7 +135,7 @@ const Registration = () => {
       <div className="flex flex-col md:flex-row w-full h-screen justify-around p-12 md:p-32 ml-auto mr-auto">
         <div className="w-full md:w-3/6">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex mb-3">
+            <div className="flex mb-3"> 
               <Input
                 id="text"
                 name="firstName"
@@ -170,6 +181,7 @@ const Registration = () => {
                 <Input
                   id="email"
                   name="email"
+                  disabled={true}
                   value={googleAcc.email}
                   placeholder="Email"
                   handleForm={handleForm}

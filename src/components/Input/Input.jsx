@@ -1,6 +1,6 @@
+import { forwardRef } from 'react';
 
-
-const Input = ({ id, placeholder, name , value, handleForm }) => {
+const Input = forwardRef(({ id, placeholder, name, errors , ...rest}, ref) => {
   return (
     <>
       <span className="text-pink-500 w-60">{placeholder}</span>
@@ -10,12 +10,13 @@ const Input = ({ id, placeholder, name , value, handleForm }) => {
         placeholder={placeholder}
         className="w-full outline-none text-purple-500 bg-transparent mt-1 mb-6"
         name={name}
-        value={value}
-        onChange={(e) => handleForm(e)}
+        {...rest}
+        ref={ref}
       />
+      <span className="flex text-red-500">{errors}</span>
     </>
   );
-}
+})
 
 
 export default Input;
