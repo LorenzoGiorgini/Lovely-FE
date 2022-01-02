@@ -11,7 +11,7 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import LoginHeroBtn from "../components/LoginHeroBtn/LoginHeroBtn";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -22,109 +22,48 @@ const Registration = () => {
 
   const [googleAcc, setGoogleAcc] = useState(null);
 
-  const [disabled, setDisabled] = useState(true);
-
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    dateOfBirth: null,
-    gender: "",
-    preferences: "",
-    googleId: "",
-  });
-
   const schema = yup
     .object()
     .shape({
       firstName: yup.string().min(2).required(),
       lastName: yup.string().min(2).required(),
-      email: yup.string().email().required(),
+      email: googleAcc ? googleAcc.email : yup.string().email().required(),
       password: googleAcc ? null : yup.string().min(8).required(),
       dateOfBirth: yup.date().required(),
-      gender: yup.string.required(),
-      preferences: yup.string.required(),
+      gender: yup.string().required(),
+      preferences: yup.string().required(),
     })
     .required();
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
+    getValues,
   } = useForm({
     resolver: yupResolver(schema),
   });
-  
-  const onSubmit = (data) => {
-    if(data) {
+
+  const onSubmit = async (data) => {
+    console.log(data)
+    /* if (data) {
       try {
-        const response = await axiosConfig.post("/users/register", form);
+        const response = await axiosConfig.post("/users/register", data);
       } catch (error) {
         console.log(error);
       }
-    }
-  }
-
-  const onDisabled = () => {
-    if (googleAcc) {
-      if (
-        form.firstName === "" ||
-        form.lastName === "" ||
-        form.email === "" ||
-        form.dateOfBirth === null ||
-        form.gender === "" ||
-        form.preferences === "" ||
-        form.googleId === ""
-      ) {
-        setDisabled(true);
-      } else {
-        setDisabled(false);
-      }
-    } else {
-      if (
-        form.firstName === "" ||
-        form.lastName === "" ||
-        form.email === "" ||
-        form.dateOfBirth === null ||
-        form.gender === "" ||
-        form.preferences === "" ||
-        form.password === ""
-      ) {
-        setDisabled(true);
-      } else {
-        setDisabled(false);
-      }
-    }
-  };
-
-  const handleForm = (e) => {
-    const value = e.target.value;
-    setForm({
-      ...form,
-      [e.target.name]: value,
-    });
+    } */
   };
 
   useEffect(() => {
     if (cookie.get("acc")) {
       setGoogleAcc(JSON.parse(cookie.get("acc").substring(2)));
-      setForm({
-        ...form,
-        googleId: JSON.parse(cookie.get("acc").substring(2)).id,
-        email: JSON.parse(cookie.get("acc").substring(2)).email,
-      });
+      /* googleId: JSON.parse(cookie.get("acc").substring(2)).id,
+        email: JSON.parse(cookie.get("acc").substring(2)).email, */
     } else {
       setGoogleAcc(null);
     }
-  }, []);
-
-  useEffect(() => {
-    onDisabled();
-  }, [form]);
-
-  useEffect(() => {
-    onDisabled();
   }, []);
 
 
@@ -135,47 +74,57 @@ const Registration = () => {
       <div className="flex flex-col md:flex-row w-full h-screen justify-around p-12 md:p-32 ml-auto mr-auto">
         <div className="w-full md:w-3/6">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex mb-3"> 
+            <div className="flex mb-3">
               <Input
                 id="text"
                 name="firstName"
-                value={form.firstName}
                 placeholder="First Name"
-                handleForm={handleForm}
+                {...register("firstName")}
+                errors={errors.firstName?.message}
               />
               <Input
                 id="text"
                 name="lastName"
-                value={form.lastName}
                 placeholder="Last Name"
-                handleForm={handleForm}
+                {...register("lastName")}
+                errors={errors.lastName?.message}
               />
             </div>
             <div className="flex flex-col mb-3">
               <span className="text-pink-500 mb-2">Birthday</span>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  format="MM/dd/yyyy"
-                  disableFuture={true}
-                  value={form.dateOfBirth}
-                  onChange={(date) => setForm({ ...form, dateOfBirth: date })}
-                />
-              </MuiPickersUtilsProvider>
+              <Controller
+                control={control}
+                name="dateOfBirth"
+                render={({ field }) => (
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      format="MM/dd/yyyy"
+                      disableFuture={true}
+                      {...field}
+                    />
+                  </MuiPickersUtilsProvider>
+                )}
+              />
+              {errors.dateOfBirth?.message && errors.dateOfBirth.message}
             </div>
             <span className="text-pink-500">Gender</span>
+           
             <ButtonGroup
-              options={gender}
-              form={form}
-              setForm={setForm}
               info={"gender"}
+              options={gender}
+              form={getValues("gender")}
+              {...register("gender")}
             />
+
             <span className="text-pink-500">Preferences</span>
+
             <ButtonGroup
-              options={preferences}
-              form={form}
-              setForm={setForm}
               info={"preferences"}
+              options={preferences}
+              form={getValues("preferences")}
+              {...register("preferences")}
             />
+            
             <div className="mb-3">
               {googleAcc ? (
                 <Input
@@ -184,24 +133,22 @@ const Registration = () => {
                   disabled={true}
                   value={googleAcc.email}
                   placeholder="Email"
-                  handleForm={handleForm}
                 />
               ) : (
                 <Input
                   id="email"
                   name="email"
-                  value={form.email}
                   placeholder="Email"
-                  handleForm={handleForm}
+                  {...register("email")}
+                  errors={errors.email?.message}
                 />
               )}
               {!googleAcc && (
                 <Input
                   id="password"
                   name="password"
-                  value={form.password}
                   placeholder="Password"
-                  handleForm={handleForm}
+                  {...register("password")}
                 />
               )}
             </div>
@@ -211,8 +158,8 @@ const Registration = () => {
                 width={"w-3/6"}
                 height={"h-9"}
                 gradient={"bg-gradient-to-l from-orange-500 to-pink-500"}
-                disabled={disabled}
-                callback={newUser}
+                type={"submit"}
+                callback={onSubmit}
               />
             </div>
           </form>
@@ -224,5 +171,7 @@ const Registration = () => {
     </div>
   );
 };
+
+
 
 export default Registration;

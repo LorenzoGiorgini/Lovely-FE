@@ -1,18 +1,25 @@
+import { forwardRef } from "react";
 
+const ButtonGroup = forwardRef(({ options, form, ...rest }, ref) => {
+  return (
+    <div className="flex mb-3 mt-2">
+      {options.map((option, index) => {
+        return (
+          <button
+            key={index + "idx"}
+            className={`p-2 mr-2 bg-white rounded-lg ${
+              option === form && "outline-none ring ring-pink-500"
+            } font-bold text-orange-500 `}
+            value={option}
+            {...rest}
+            ref={ref}
+          >
+            {option}
+          </button>
+        );
+      })}
+    </div>
+  );
+});
 
-function ButtonGroup({options, info , form, setForm}) {
-
-    return (
-        <div className="flex mb-3 mt-2">
-            {form && options.map((option, index) => {
-                return (
-                    <button key={index + "index"} className={`p-2 mr-2 bg-white rounded-lg ${option === form[info] && "outline-none ring ring-pink-500" } font-bold text-orange-500 `} value={option} onClick={(e) => setForm({ ...form , [info]: e.target.value })}>{option}</button>
-                )
-            })} 
-        </div>
-    )
-}
-
-
-
-export default ButtonGroup
+export default ButtonGroup;
